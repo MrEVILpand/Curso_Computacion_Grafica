@@ -1,6 +1,6 @@
-//Previo 3
+//Practica 3
 //Martinez Martinez Ivan
-//Fecha de entrega: 29 de agosto del 2026
+//Fecha de entrega: 31 de agosto del 2026
 //Numero de cuenta: 320323764
 #include<iostream>
 
@@ -223,31 +223,74 @@ int main() {
 		glm::mat4 view=glm::mat4(1);
 	
 	  view = glm::translate(view, glm::vec3(0.0f,0.0f,-12.0f));
-	  model = glm::rotate( model, 0.5f, glm::vec3( 2.0f, 1.0f, 1.0f ) ); // use to compare orthographic and perspective projection
-		model = glm::scale(model, glm::vec3(2.0f, 3.0f, 1.0f));
-//		view = glm::translate( view, glm::vec3( screenWidth / 2, screenHeight / 4,-900.0f ) ); // use with orthographic projection
-		
+//	  model = glm::rotate( model, 0.5f, glm::vec3( 2.0f, 1.0f, 1.0f ) ); // use to compare orthographic and perspective projection
+//		model = glm	::scale(model, glm::vec3(2.0f, 3.0f, 1.0f));
+////		view = glm::translate( view, glm::vec3( screenWidth / 2, screenHeight / 4,-900.0f ) ); // use with orthographic projection
+//		
 		GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
 		GLint projecLoc = glGetUniformLocation(ourShader.Program, "projection");
-		
+//		
 		glUniformMatrix4fv(projecLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		
-
+//		
+//
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(6.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+//		glDrawArrays(GL_TRIANGLES, 0, 36);
+//		model = glm::mat4(1);
+//		model = glm::translate(model, glm::vec3(6.0f, 0.0f, 0.0f));
+//		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+//		glDrawArrays(GL_TRIANGLES, 0, 36);
+//
+//		model = glm::mat4(1);
+//		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 0.0f));
+//		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+//		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+
+//Cajita 1
+		 model = glm::mat4(1.0f);
+		 //movemos un poco hacia arriba y hacia la derecha
+		 model = glm::translate(model, glm::vec3(0.2f, 2.5f, 0.0f));
+		 //Escalamos tamaño
+		 model = glm::scale(model, glm::vec3(2.2f, 2.2f, 2.2f));
+		 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		 glDrawArrays(GL_TRIANGLES, 0, 36);
+
+//Cajita 2
+		 model = glm::mat4(1.0f);
+		 //posicionamos abajo de la caja 1
+		 model = glm::translate(model, glm::vec3(-0.3f, 0.75f, 0.0f));
+		 //rotamos para cambiar la cara 
+		 model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		 //lo hacemos mas pequeño
+		 model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		 glDrawArrays(GL_TRIANGLES, 0, 36);
+
+//Cajita 3 
+		 model = glm::mat4(1.0f);
+		 //posicionamos abajo de la caja 2
+		 model = glm::translate(model, glm::vec3(-0.2f, -1.1f, 0.0f));
+		 //rotamos para cambiar la cara 
+		 model = glm::rotate(model, glm::radians(79.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		 //lo hacemos mas pequeño
+		 model = glm::scale(model, glm::vec3(1.8f, 1.8f, 1.8f));
+		 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		 glDrawArrays(GL_TRIANGLES, 0, 36);
+
+//Cajita 4
+		 model = glm::mat4(1.0f);
+		 //posicionamos abajo de la caja 2
+		 model = glm::translate(model, glm::vec3(-0.4f, -3.05f, 0.0f));
+		 //rotamos para cambiar la cara 
+		 model = glm::rotate(model, glm::radians(-79.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		 //lo hacemos mas pequeño
+		 model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		 glDrawArrays(GL_TRIANGLES, 0, 36);
+		 glBindVertexArray(0);
 
 
 
