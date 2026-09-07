@@ -1,6 +1,6 @@
-//Previo 4
+//Practica 4
 //Martinez Martinez Ivan
-//Fecha de entrega: 6 de septiembre de 2026
+//Fecha de entrega: 11 de septiembre de 2026
 //Numero de cuenta: 320323764
 #include<iostream>
 
@@ -200,35 +200,121 @@ int main() {
 	
 
 		glBindVertexArray(VAO);
-	
-	    model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(3.0f, 0.1f, 2.0f)); //ancho, grosor y profundidad
-		model = glm::translate(model, glm::vec3(0.0f,0.6f,0.0f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//Zombie minecra con gallina
 		
-		//pata 1
+		//cuerpo del gallina
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de pata
-		model = glm::translate(model, glm::vec3(2.9f, -0.6f, 1.9f));//posicion de pata
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.8f, 0.8f, 1.2f));
+		glUniformMatrix4fv(modelLoc,1,GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//alita izquierda
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.5f, 0.1f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, 0.8f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//pata 2
+
+		//alita derecha
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de pata
-		model = glm::translate(model, glm::vec3(-2.9f, -0.6f, 1.9f));//posicion de pata
+		model = glm::translate(model, glm::vec3(-0.5f, 0.1f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, 0.8f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//pata 3
+
+	    //Cabeza de la gallina
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de pata
-		model = glm::translate(model, glm::vec3(-2.9f, -0.6f, -1.9f));//posicion de pata
+		model = glm::translate(model, glm::vec3(0.0f, 0.7f, 0.7f));
+		model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//pata 4
+
+		// Pico de la gallina
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de pata
-		model = glm::translate(model, glm::vec3(2.9f, -0.6f, -1.9f));//posicion de pata
+		model = glm::translate(model, glm::vec3(0.0f, 0.6f, 1.1f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.2f, 0.4f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pata Izquierda
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.3f, -0.7f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pata Derecha
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-0.3f, -0.7f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pie Izquierdo
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.3f, -1.05f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.1f, 0.4f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pie Derecho
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-0.3f, -1.05f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.1f, 0.4f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		//papada de la gallina
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.35f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.3f, 0.2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		//Zombie bb
+
+		// Torso del Zombie
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.7f, -0.2f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.6f, 0.3f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Cabeza del Zombie
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 1.4f, -0.2f));
+		model = glm::scale(model, glm::vec3(0.8f, 0.8f, 0.8f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Brazo Izquierdo (extendido al frente)
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.4f, 0.8f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.6f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Brazo Derecho (extendido al frente)
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-0.4f, 0.8f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.6f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pierna Izquierda (montando la gallina)
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.5f, 0.4f, -0.2f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, 0.2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pierna Derecha (montando la gallina)
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-0.5f, 0.4f, -0.2f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.5f, 0.2f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -254,9 +340,9 @@ int main() {
 	 if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		 movX -= 0.08f;
 	 if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		 movY += 0.08f;
+		 movY += 0.01f;
 	 if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		 movY -= 0.08f;
+		 movY -= 0.01f;
 	 if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		 movZ -= 0.08f;
 	 if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
