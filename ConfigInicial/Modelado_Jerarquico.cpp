@@ -364,6 +364,13 @@ void Inputs(GLFWwindow* window) {
 		dedo3 += 0.18f;
 	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
 		dedo3 -= 0.18f;
+
+	hombro = glm::clamp(hombro, -90.0f, 90.0f);
+	codo = glm::clamp(codo, -135.0f, 0.0f);
+	muneca = glm::clamp(muneca, -45.0f, 45.0f);
+	dedo1 = glm::clamp(dedo1, -70.0f, 55.0f);     
+	dedo2 = glm::clamp(dedo2, -70.0f, 5.0f);   
+	dedo3 = glm::clamp(dedo3, -70.0f, 5.0f);
 }
  
 
