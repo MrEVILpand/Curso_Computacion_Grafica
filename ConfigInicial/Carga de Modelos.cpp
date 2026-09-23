@@ -138,7 +138,7 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(modelDog1));
         dog.Draw(shader);
 
-        // --- 4. DIBUJAR PERRO 2 (Derecha, mirando al centro) ---
+        // --- 4. DIBUJAR PERRO 2 
         glm::mat4 modelDog2(1.0f);
         modelDog2 = glm::translate(modelDog2, glm::vec3(4.5f, 1.2f, 0.0f));
         modelDog2 = glm::scale(modelDog2, glm::vec3(5.0f, 5.0f, 5.0f));
