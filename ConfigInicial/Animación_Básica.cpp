@@ -1,7 +1,8 @@
-//Previo 10
+//Practica 10
 //Martinez Martinez Ivan
-//Fecha de entrega: 15 de octubre de 2026
+//Fecha de entrega: 19 de octubre de 2026
 //Numero de cuenta: 320323764 
+
 #include <iostream>
 #include <cmath>
 
@@ -38,7 +39,7 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 1.5f, 6.0f));
 GLfloat lastX = WIDTH / 2.0;
 GLfloat lastY = HEIGHT / 2.0;
 bool keys[1024];
@@ -102,15 +103,27 @@ float vertices[] = {
 
 glm::vec3 Light1 = glm::vec3(0);
 
-// Anim
-float rotBall = 0.0f;
-float movBallY = 0.0f;   // Desplazamiento vertical de la pelota
-bool AnimBall = false;
-bool subirBall = true;   // Bandera de dirección (true = hacia arriba, false = hacia abajo)
+// ================= VARIABLES DE ANIMACIÓN (PRÁCTICA 10) =================
+bool AnimBall = false;         // Se activa/pausa con la tecla N
+float radioCirculo = 2.0f;     // Radio de la trayectoria circular
+float anguloCirculo = 0.0f;    // Inicia en 0° (listos para el primer cabezazo)
+
+// Variables del Perro
+float movDogX = 0.0f;
+float movDogY = 0.0f;
+float movDogZ = 0.0f;
+float rotDogY = 0.0f;          // Orientación tangencial del perro
+float cabeceoDog = 0.0f;       // Inclinación para dar el cabezazo
+
+// Variables de la Pelota
+float movBallX = 0.0f;
+float movBallY = 0.0f;
+float movBallZ = 0.0f;
+float rotBallY = 0.0f;         // Orientación tangencial para alinear con la nariz del perro
 
 // Deltatime
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;  	// Time of last frame
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
 
 int main()
 {
@@ -118,7 +131,7 @@ int main()
 	glfwInit();
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Martinez Martinez Ivan", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Practica 10 - Martinez Martinez Ivan", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -155,6 +168,16 @@ int main()
 	Model Dog((char*)"Models/RedDog.obj");
 	Model Piso((char*)"Models/piso.obj");
 	Model Ball((char*)"Models/ball.obj");
+
+	// Inicializar posiciones antes de que empiece a correr la animación
+	float radInit = glm::radians(anguloCirculo);
+	movDogX = radioCirculo * cos(radInit);
+	movDogZ = radioCirculo * sin(radInit);
+	rotDogY = -anguloCirculo;
+
+	movBallX = radioCirculo * cos(-radInit);
+	movBallZ = radioCirculo * sin(-radInit);
+	rotBallY = anguloCirculo;
 
 	// First, set the container's VAO (and VBO)
 	GLuint VBO, VAO;
@@ -254,24 +277,29 @@ int main()
 
 		glm::mat4 model(1);
 
-		// Carga de modelos
+		// 1. Dibujo del Piso
 		view = camera.GetViewMatrix();
 		model = glm::mat4(1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
 		Piso.Draw(lightingShader);
 
+		// 2. Dibujo del Perro (Trayectoria circular + orientación + cabezazo)
 		model = glm::mat4(1);
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
+		model = glm::translate(model, glm::vec3(movDogX, movDogY, movDogZ));
+		model = glm::rotate(model, glm::radians(rotDogY), glm::vec3(0.0f, 1.0f, 0.0f));     // Giro siguiendo el círculo
+		model = glm::rotate(model, glm::radians(cabeceoDog), glm::vec3(1.0f, 0.0f, 0.0f));  // Inclinación del cabezazo
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Dog.Draw(lightingShader);
 
-		// Dibujo de la pelota con traslación vertical y rotación
+		// 3. Dibujo de la Pelota (Alineada con el carril de la nariz del perro + trayectoria de arco continuo)
 		model = glm::mat4(1);
 		glEnable(GL_BLEND); // Activa la funcionalidad para trabajar el canal alfa
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
-		model = glm::translate(model, glm::vec3(0.0f, movBallY, 0.0f));
-		model = glm::rotate(model, glm::radians(rotBall), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(movBallX, movBallY, movBallZ));
+		model = glm::rotate(model, glm::radians(rotBallY), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Ball.Draw(lightingShader);
 		glDisable(GL_BLEND); // Desactiva el canal alfa 
@@ -400,25 +428,47 @@ void Animation()
 {
 	if (AnimBall)
 	{
-		//rotBall += 0.2f;
+		float velAngular = 65.0f * deltaTime;
+		anguloCirculo += velAngular;
 
-		if (subirBall)
+		if (anguloCirculo >= 360.0f)
 		{
-			movBallY += 0.005f;
-			// Sube hasta alcanzar la altura de la fuente de luz
-			if (movBallY >= pointLightPositions[0].y)
-			{
-				subirBall = false;
-			}
+			anguloCirculo -= 360.0f;
+		}
+
+		float rad = glm::radians(anguloCirculo);
+
+		// 1. Movimiento circular del Perro
+		movDogX = radioCirculo * cos(rad);
+		movDogZ = radioCirculo * sin(rad);
+		rotDogY = -anguloCirculo;
+
+		// 2. Movimiento circular de la Pelota (Sentido contrario)
+		movBallX = radioCirculo * cos(-rad);
+		movBallZ = radioCirculo * sin(-rad);
+		rotBallY = anguloCirculo;
+
+		// 3. Altura de la pelota: 
+		float alturaBase = 0.5f;   // Altura donde la toca el perro
+		float alturaMaxima = 1.5f; // Altura máxima del arco en el aire
+		movBallY = alturaBase + (alturaMaxima - alturaBase) * fabs(sin(rad));
+
+		// 4. Distancia angular hacia los 2 puntos de intersección (0° y 180°)
+		float distPunto1 = fmin(anguloCirculo, 360.0f - anguloCirculo);
+		float distPunto2 = fabs(anguloCirculo - 180.0f);
+		float distInterseccion = fmin(distPunto1, distPunto2);
+
+		float rangoSaltoPerro = 12.0f;
+		if (distInterseccion < rangoSaltoPerro)
+		{
+			float factorPerro = 1.0f - (distInterseccion / rangoSaltoPerro);
+			movDogY = 0.5f * sin(factorPerro * glm::pi<float>() * 0.5f);
+			cabeceoDog = -20.0f * sin(factorPerro * glm::pi<float>());
 		}
 		else
 		{
-			movBallY -= 0.005f;
-			// Baja de regreso hasta la nariz del perro (posición inicial 0.0f)
-			if (movBallY <= 0.0f)
-			{
-				subirBall = true;
-			}
+			movDogY = 0.0f;
+			cabeceoDog = 0.0f;
 		}
 	}
 }
