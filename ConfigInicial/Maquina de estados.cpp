@@ -1,6 +1,6 @@
-//Previo 11
+//Practica 11
 //Martinez Martinez Ivan
-//Fecha de entrega: 25 de Octubre de 2026
+//Fecha de entrega: 26 de Octubre de 2026
 //Numero de cuenta: 320323764
 #include <iostream>
 #include <cmath>
@@ -505,51 +505,162 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 	}
 	if (keys[GLFW_KEY_B])
 	{
-		dogAnim = 1;
+		if (dogAnim == 0) {
+			dogAnim = 1; 
+		}
 	}
 
 }
+
 void Animation() {
 	if (AnimBall)
 	{
 		rotBall += 0.4f;
-		//printf("%f", rotBall);
 	}
 
 	if (AnimDog)
 	{
 		rotDog -= 0.4f;
-		//printf("%f", rotBall);
 	}
 
-	if (dogAnim == 1) {  // Walk animation
-		// Verificamos que no haya llegado al límite del piso (aprox. 2.2f en Z)
-		if (dogPos.z < 2.2f) {
-			if (!step) {
-				RLegs += 0.3f;
-				FLegs += 0.3f;
-				head += 0.3f;
-				tail += 0.3f;
-				if (RLegs > 15.0f) // condicion
-					step = true;
-			}
-			else {
-				RLegs -= 0.3f;
-				FLegs -= 0.3f;
-				head -= 0.3f;
-				tail -= 0.3f;
-				if (RLegs < -15.0f) // condicion
-					step = false;
-			}
-			dogPos.z += 0.001f; // Velocidad de avance (puedes dejar 0.0001f si tu PC va muy rápido)
+	// Si el perro está en cualquier estado del recorrido (estados 1 al 10)
+	if (dogAnim >= 1 && dogAnim <= 10) {
+
+		// Velocidades 
+		float velCamina = 0.0002f;
+		float velGiro = 0.015f;
+		float velPatas = 0.035f;
+
+		// 1. Ciclo de movimiento de patas, cabeza y cola (activo al caminar y al girar)
+		if (!step) {
+			RLegs += velPatas;
+			FLegs += velPatas;
+			head += velPatas * 0.5f;
+			tail += velPatas;
+			if (RLegs > 15.0f)
+				step = true;
 		}
 		else {
-			// Cuando llega al límite del piso, se detiene y regresa a su postura neutral
-			dogAnim = 0;
-			RLegs = 0.0f;
-			FLegs = 0.0f;
-			head = 0.0f;
-			tail = 0.0f;
+			RLegs -= velPatas;
+			FLegs -= velPatas;
+			head -= velPatas * 0.5f;
+			tail -= velPatas;
+			if (RLegs < -15.0f)
+				step = false;
+		}
+
+		// 2. Máquina de estados para la trayectoria E -> A -> B -> C -> D -> E
+		switch (dogAnim) {
+		case 1: // E -> A (Avanza hacia +Z)
+			if (dogPos.z < 2.2f) {
+				dogPos.z += velCamina;
+			}
+			else {
+				dogPos.z = 2.2f;
+				dogAnim = 2; // Pasa a girar en A
+			}
+			break;
+
+		case 2: // Giro en A mirando hacia B (0° a 90°)
+			if (dogRot < 90.0f) {
+				dogRot += velGiro;
+				dogPos.x += velCamina * 0.05f; // Pequeño avance para suavizar el pivote
+			}
+			else {
+				dogRot = 90.0f;
+				dogAnim = 3; // Pasa a caminar A -> B
+			}
+			break;
+
+		case 3: // A -> B (Avanza hacia +X)
+			if (dogPos.x < 2.2f) {
+				dogPos.x += velCamina;
+			}
+			else {
+				dogPos.x = 2.2f;
+				dogAnim = 4; // Pasa a girar en B
+			}
+			break;
+
+		case 4: // Giro en B mirando hacia C (90° a 180°)
+			if (dogRot < 180.0f) {
+				dogRot += velGiro;
+				dogPos.z -= velCamina * 0.05f;
+			}
+			else {
+				dogRot = 180.0f;
+				dogAnim = 5; // Pasa a caminar B -> C
+			}
+			break;
+
+		case 5: // B -> C (Avanza hacia -Z)
+			if (dogPos.z > -2.2f) {
+				dogPos.z -= velCamina;
+			}
+			else {
+				dogPos.z = -2.2f;
+				dogAnim = 6; // Pasa a girar en C
+			}
+			break;
+
+		case 6: // Giro en C mirando hacia D (180° a 270°)
+			if (dogRot < 270.0f) {
+				dogRot += velGiro;
+				dogPos.x -= velCamina * 0.05f;
+			}
+			else {
+				dogRot = 270.0f;
+				dogAnim = 7; // Pasa a caminar C -> D
+			}
+			break;
+
+		case 7: // C -> D (Avanza hacia -X)
+			if (dogPos.x > -2.2f) {
+				dogPos.x -= velCamina;
+			}
+			else {
+				dogPos.x = -2.2f;
+				dogAnim = 8; // Pasa a girar en D
+			}
+			break;
+
+		case 8: // Giro en D mirando en diagonal hacia E (270° a 405° / 45°)
+			if (dogRot < 405.0f) {
+				dogRot += velGiro;
+			}
+			else {
+				dogRot = 45.0f; // 405° equivale a 45°
+				dogAnim = 9;    // Pasa a caminar en diagonal D -> E
+			}
+			break;
+
+		case 9: // D -> E (Avanza en diagonal hacia el origen 0,0)
+			if (dogPos.x < 0.0f && dogPos.z < 0.0f) {
+				// 0.7071f es cos(45°), mantiene la misma velocidad lineal en la diagonal
+				dogPos.x += velCamina * 0.7071f;
+				dogPos.z += velCamina * 0.7071f;
+			}
+			else {
+				dogPos.x = 0.0f;
+				dogPos.z = 0.0f;
+				dogAnim = 10; // Pasa al giro final en E
+			}
+			break;
+
+		case 10: // Giro final en E para volver a mirar hacia A (de 45° a 0°)
+			if (dogRot > 0.0f) {
+				dogRot -= velGiro;
+			}
+			else {
+				dogRot = 0.0f;
+				// Termina el recorrido y regresa a postura neutral
+				dogAnim = 0;
+				RLegs = 0.0f;
+				FLegs = 0.0f;
+				head = 0.0f;
+				tail = 0.0f;
+			}
+			break;
 		}
 	}
 }
