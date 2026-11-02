@@ -540,7 +540,7 @@ void Animation() {
 			if (RLegs > 15.0f)
 				step = true;
 		}
-		else {
+		else {		
 			RLegs -= velPatas;
 			FLegs -= velPatas;
 			head -= velPatas * 0.5f;
